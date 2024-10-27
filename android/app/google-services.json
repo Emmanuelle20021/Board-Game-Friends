@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "148713715431",
-    "project_id": "board-game-friends-app",
-    "storage_bucket": "board-game-friends-app.appspot.com"
+    "project_number": "229482815252",
+    "project_id": "board-game-friends",
+    "storage_bucket": "board-game-friends.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:148713715431:android:c302e96586082c6d3ad442",
+        "mobilesdk_app_id": "1:229482815252:android:cff2deaf57306f45dfec01",
         "android_client_info": {
-          "package_name": "com.bgfdev"
+          "package_name": "com.TechSolutions.board_game_friends"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCeInff2m2WjJf2W2gmvfeBsqWLiHuDtFY"
+          "current_key": "AIzaSyBAyHwnTiUg7oGTKX2JuiiQ7UPow_MOlLs"
         }
       ],
       "services": {
