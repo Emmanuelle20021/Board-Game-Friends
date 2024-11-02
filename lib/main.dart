@@ -33,7 +33,8 @@ class MyApp extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 10),
             child: SvgPicture.asset(
               key: Key('logo'),
-              'assets/${Constants.kLogoBGFHorizontal}',
+              //'assets/${Constants.kLogoBGFHorizontal}'
+              Constants.kLogoBGFHorizontal,
               height: 30,
               fit: BoxFit.contain,
             ),
