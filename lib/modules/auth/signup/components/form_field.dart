@@ -7,6 +7,7 @@ class CustomFormField extends StatelessWidget {
   final TextInputType? inputType;
   final bool isPassword;
   final TextEditingController? controller;
+  final String? errorText;
 
   const CustomFormField({
     super.key,
@@ -16,6 +17,7 @@ class CustomFormField extends StatelessWidget {
     this.inputType,
     this.isPassword = false,
     this.controller,
+    this.errorText,
   });
 
   @override
@@ -34,6 +36,7 @@ class CustomFormField extends StatelessWidget {
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(color: Colors.orange),
           ),
+          errorText: errorText,
         ),
       ),
     );

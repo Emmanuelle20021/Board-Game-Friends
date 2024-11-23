@@ -21,6 +21,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
   bool _termsAccepted = false;
   bool _isFormValid = false;
+  String? _passwordError;
 
   @override
   void initState() {
@@ -51,7 +52,14 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
   void _validateForm() {
     setState(() {
-      // Validar que todos los campos estén llenos
+      // Verificar si las contraseñas coinciden
+      if (_passwordController.text != _confirmPasswordController.text) {
+        _passwordError = 'Las contraseñas no coinciden';
+      } else {
+        _passwordError = null;
+      }
+
+      // Validar que todos los campos estén completos y las contraseñas coincidan
       _isFormValid = _usernameController.text.isNotEmpty &&
           _birthdateController.text.isNotEmpty &&
           _countryController.text.isNotEmpty &&
@@ -59,7 +67,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           _emailController.text.isNotEmpty &&
           _passwordController.text.isNotEmpty &&
           _confirmPasswordController.text.isNotEmpty &&
-          _termsAccepted;
+          _termsAccepted &&
+          _passwordError == null;
     });
   }
 
@@ -172,6 +181,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               hintText: "Repite tu contraseña",
               prefixIcon: Icons.lock,
               isPassword: true,
+              errorText: _passwordError,
             ),
 
             const SizedBox(height: 20),
