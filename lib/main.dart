@@ -1,9 +1,9 @@
+import 'package:board_game_friends/modules/auth/signup/screen/registration_screen.dart';
 import 'package:board_game_friends/shared/utils/constants.dart';
 import 'package:board_game_friends/shared/utils/extensions/int_to_gap.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:latlong2/latlong.dart';
 
 import 'keys/firebase_options.dart';
@@ -27,54 +27,10 @@ class MyApp extends StatelessWidget {
       title: Constants.kAppName,
       theme: Constants.kThemeData,
       home: Scaffold(
-        extendBodyBehindAppBar: true,
-        appBar: AppBar(
-          title: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            child: SvgPicture.asset(
-              key: Key('logo'),
-              //'assets/${Constants.kLogoBGFHorizontal}'
-              Constants.kLogoBGFHorizontal,
-              height: 30,
-              fit: BoxFit.contain,
-            ),
-          ),
-          actions: [
-            IconButton(
-              key: Key('notifications'),
-              icon: Badge.count(
-                count: 3,
-                child: const Icon(Icons.notifications),
-              ),
-              onPressed: () {},
-            ),
-            20.toHorizontalGap,
-            InkWell(
-              hoverColor: Colors.transparent,
-              overlayColor: WidgetStatePropertyAll<Color>(Colors.transparent),
-              onTap: () {},
-              child: CircleAvatar(
-                backgroundColor: Colors.transparent,
-                backgroundImage: NetworkImage(
-                  'https://avatars.githubusercontent.com/u/139426',
-                ),
-              ),
-            ),
-            20.toHorizontalGap,
-          ],
-        ),
-        drawer: Drawer(),
-        body: HomeScreen(),
-        bottomNavigationBar: BottomNavigationBar(
-          items: [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person),
-              label: 'Profile',
-            ),
+        body: PageView(
+          children: [
+            HomeScreen(),
+            RegistrationScreen(),
           ],
         ),
         drawerEnableOpenDragGesture: true,
