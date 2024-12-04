@@ -87,12 +87,31 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
   //detectar si el usuario es mayor de edad
   bool isAdult() {
-    final now = DateTime.now();
-    final birthdate = DateTime.parse(_birthdateController.text);
-    final daysPerYear = 365.25;
-    final difference = now.difference(birthdate).inDays;
-    final years = difference / daysPerYear;
-    return years >= 18;
+    final input = _birthdateController.text;
+
+    if (!RegExp(r'^\d{2}/\d{2}/\d{4}$').hasMatch(input)) {
+      print('Error: El formato de la fecha debe ser dd/MM/yyyy.');
+      return false;
+    }
+
+    try {
+      // Separar día, mes y año
+      final parts = input.split('/');
+      final day = int.parse(parts[0]);
+      final month = int.parse(parts[1]);
+      final year = int.parse(parts[2]);
+
+      final birthdate = DateTime(year, month, day);
+      final now = DateTime.now();
+      final daysPerYear = 365.25;
+      final difference = now.difference(birthdate).inDays;
+      final years = difference / daysPerYear;
+
+      return years >= 18;
+    } catch (e) {
+      print('Error: Fecha inválida.');
+      return false;
+    }
   }
 
 
