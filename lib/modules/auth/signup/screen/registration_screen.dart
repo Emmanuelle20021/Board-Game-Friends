@@ -63,6 +63,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         _passwordError = null;
       }
 
+      //password entre 8 y 40 caracteres
+      if (_passwordController.text.length < 8 || _passwordController.text.length > 40) {
+        _passwordError = 'La contraseña debe tener entre 8 y 40 caracteres';
+      }
+
+
+
       // Validar que todos los campos estén completos y las contraseñas coincidan
       _isFormValid = _usernameController.text.isNotEmpty &&
           _birthdateController.text.isNotEmpty &&
@@ -73,9 +80,21 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           _passwordController.text.isNotEmpty &&
           _confirmPasswordController.text.isNotEmpty &&
           _termsAccepted &&
+          isAdult() &&
           _passwordError == null;
     });
   }
+
+  //detectar si el usuario es mayor de edad
+  bool isAdult() {
+    final now = DateTime.now();
+    final birthdate = DateTime.parse(_birthdateController.text);
+    final daysPerYear = 365.25;
+    final difference = now.difference(birthdate).inDays;
+    final years = difference / daysPerYear;
+    return years >= 18;
+  }
+
 
   Future<void> _selectBirthdate(BuildContext context) async {
     DateTime? pickedDate = await showDatePicker(
