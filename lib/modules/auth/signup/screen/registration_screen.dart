@@ -192,8 +192,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
             CustomFormField(
               controller: _confirmPasswordController,
-              label: "Repetir contraseña",
-              hintText: "Repite tu contraseña",
+              label: "Confirmar contraseña",
+              hintText: "Confirma tu contraseña",
               prefixIcon: Icons.lock,
               isPassword: true,
               errorText: _passwordError,
