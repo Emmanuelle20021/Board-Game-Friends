@@ -23,6 +23,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   bool _isFormValid = false;
   String? _passwordError;
 
+  bool _isPasswordVisible = false;
+  bool _isConfirmPasswordVisible = false;
+
   @override
   void initState() {
     super.initState();
@@ -173,15 +176,41 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               hintText: "Introduce tu contraseña",
               prefixIcon: Icons.lock,
               isPassword: true,
+              obscureText: !_isPasswordVisible,
+              suffixIcon: IconButton(
+                icon: Icon(
+                  _isPasswordVisible ? Icons.visibility_off : Icons.visibility,
+                  color: Colors.grey,
+                ),
+                onPressed: () {
+                  setState(() {
+                    _isPasswordVisible = !_isPasswordVisible;
+                  });
+                },
+              ),
             ),
 
             CustomFormField(
               controller: _confirmPasswordController,
-              label: "Confirmar contraseña",
-              hintText: "Confirma tu contraseña",
+              label: "Repetir contraseña",
+              hintText: "Repite tu contraseña",
               prefixIcon: Icons.lock,
               isPassword: true,
               errorText: _passwordError,
+              obscureText: !_isConfirmPasswordVisible,
+              suffixIcon: IconButton(
+                icon: Icon(
+                  _isConfirmPasswordVisible
+                      ? Icons.visibility_off
+                      : Icons.visibility,
+                  color: Colors.grey,
+                ),
+                onPressed: () {
+                  setState(() {
+                    _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
+                  });
+                },
+              ),
             ),
 
             const SizedBox(height: 20),
