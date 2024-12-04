@@ -29,7 +29,7 @@ class User {
     required this.uid,
   });
 
-  factory User.fromMAP({required Map<String, dynamic> data, String? uid}) {
+  factory User.fromMap({required Map<String, dynamic> data, String? uid}) {
     return User(
       email: data['email'],
       username: data['username'],
