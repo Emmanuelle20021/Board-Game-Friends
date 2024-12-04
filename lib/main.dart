@@ -7,6 +7,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:latlong2/latlong.dart';
 
 import 'keys/firebase_options.dart';
+import 'modules/auth/signup/screen/registration_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -64,7 +65,7 @@ class MyApp extends StatelessWidget {
           ],
         ),
         drawer: Drawer(),
-        body: HomeScreen(),
+        body: RegistrationScreen(),
         bottomNavigationBar: BottomNavigationBar(
           items: [
             BottomNavigationBarItem(
