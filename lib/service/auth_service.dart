@@ -34,9 +34,11 @@ class AuthService {
       );
       User? user = credential.user;
       return user;
-    } catch (e) {
-      debugPrint(e.toString());
-      return null;
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'email-already-in-use') {
+        throw Exception('El email ya está en uso');
+      }
+      rethrow;
     }
   }
 
