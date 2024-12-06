@@ -35,12 +35,12 @@ class User {
       username: data['username'],
       name: data['name'],
       lastName: data['lastName'],
-      birthDate: data['birthDate'],
+      birthDate: DateTime.parse(data['birthDate'].toString()),
       country: data['country'],
       city: data['city'],
       state: data['state'],
       rank: data['rank'],
-      favGames: data['favGames'],
+      favGames: <String>[...data['favGames']],
       description: data['description'],
       bggUser: data['bggUser'],
       uid: uid,
@@ -53,7 +53,7 @@ class User {
       'username': username,
       'name': name,
       'lastName': lastName,
-      'birthDate': birthDate,
+      'birthDate': birthDate.toString(),
       'country': country,
       'city': city,
       'state': state,
@@ -83,7 +83,10 @@ class User {
           city == other.city &&
           state == other.state &&
           rank == other.rank &&
-          favGames == other.favGames &&
+          favGames.length == other.favGames.length &&
+          favGames.every(
+            (game) => other.favGames.contains(game),
+          ) &&
           description == other.description &&
           bggUser == other.bggUser &&
           uid == other.uid;
