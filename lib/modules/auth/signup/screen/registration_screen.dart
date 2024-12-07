@@ -1,3 +1,9 @@
+import 'package:board_game_friends/exceptions/service_exception.dart';
+import 'package:board_game_friends/main.dart';
+import 'package:board_game_friends/models/user.dart';
+import 'package:board_game_friends/services/auth_service.dart';
+import 'package:board_game_friends/services/user_service.dart';
+import 'package:board_game_friends/shared/utils/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:board_game_friends/modules/auth/signup/components/form_field.dart';
@@ -67,11 +73,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       }
 
       //password entre 8 y 40 caracteres
-      if (_passwordController.text.length < 8 || _passwordController.text.length > 40) {
+      if (_passwordController.text.length < 8 ||
+          _passwordController.text.length > 40) {
         _passwordError = 'La contraseña debe tener entre 8 y 40 caracteres';
       }
-
-
 
       // Validar que todos los campos estén completos y las contraseñas coincidan
       _isFormValid = _usernameController.text.isNotEmpty &&
@@ -84,6 +89,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           _confirmPasswordController.text.isNotEmpty &&
           _termsAccepted &&
           isAdult() &&
+          isEmailValid(_emailController.text) &&
           _passwordError == null;
     });
   }
@@ -116,7 +122,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       return false;
     }
   }
-
 
   Future<void> _selectBirthdate(BuildContext context) async {
     DateTime? pickedDate = await showDatePicker(
@@ -175,8 +180,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               ),
             ),
 
-
-
             CSCPicker(
               onCountryChanged: (value) {
                 setState(() {
@@ -185,12 +188,12 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               },
               onStateChanged: (value) {
                 setState(() {
-                  _stateController.text = value??"";
+                  _stateController.text = value ?? "";
                 });
               },
               onCityChanged: (value) {
                 setState(() {
-                  _cityController.text = value??"";
+                  _cityController.text = value ?? "";
                 });
               },
 
@@ -198,28 +201,18 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               showCities: true,
               flagState: CountryFlag.DISABLE,
               //Tipo de letra y color del dropdown acorde a los otros campos
-                dropdownDecoration: BoxDecoration(
+              dropdownDecoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
                 //texto
                 border: Border.all(color: Colors.orange),
               ),
-                selectedItemStyle: TextStyle( color:Colors.grey[600], fontSize: 16),
-
-
-
-
+              selectedItemStyle:
+                  TextStyle(color: Colors.grey[600], fontSize: 16),
 
               //flagState: CountryFlag.SHOW_IN_DROP_DOWN_ONLY,
-
-
-
-
-
-
             ),
 
-
-          /*
+            /*
               //Labels reemplazados por CSCPicker
             CustomFormField(
               controller: _countryController,
@@ -257,8 +250,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               hintText: "Introduce tu correo",
               prefixIcon: Icons.email,
               inputType: TextInputType.emailAddress,
+              validator: (value) {
+                if (value != null && !isEmailValid(value)) {
+                  return 'Introduce un correo válido';
+                }
+                return '';
+              },
             ),
-
             CustomFormField(
               controller: _passwordController,
               label: "Contraseña",
@@ -278,7 +276,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 },
               ),
             ),
-
             CustomFormField(
               controller: _confirmPasswordController,
               label: "Confirmar contraseña",
@@ -301,9 +298,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 },
               ),
             ),
-
             const SizedBox(height: 20),
-
             Row(
               children: [
                 Checkbox(
@@ -323,15 +318,61 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 ),
               ],
             ),
-
             const SizedBox(height: 20),
-
             // Botón de registro
             Center(
               child: ElevatedButton(
                 onPressed: _isFormValid
-                    ? () {
-                        // Acción del botón
+                    ? () async {
+                        try {
+                          // Acción del botón
+                          final user =
+                              await AuthService.signUpWithEmailAndPassword(
+                            email: _emailController.text,
+                            password: _passwordController.text,
+                          );
+
+                          if (user == null && context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  "Ha ocurrido un error. Por favor, inténtalo de nuevo.",
+                                ),
+                              ),
+                            );
+                            return;
+                          }
+                          await UserService.createUser(
+                            User.newEmpty(
+                              uid: user!.uid,
+                              email: _emailController.text,
+                              username: _usernameController.text,
+                              birthDate: parseStringDate(
+                                _birthdateController.text,
+                              ),
+                              country: _countryController.text,
+                              city: _cityController.text,
+                              state: _stateController.text,
+                            ),
+                          );
+
+                          if (!context.mounted) return;
+
+                          // Navegar a la pantalla de inicio
+                          Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(
+                              builder: (context) => HomeScreen(),
+                            ),
+                          );
+                        } on ServiceException catch (e) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                e.message,
+                              ),
+                            ),
+                          );
+                        }
                       }
                     : null,
                 style: ElevatedButton.styleFrom(
@@ -350,5 +391,14 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         ),
       ),
     );
+  }
+
+  DateTime parseStringDate(String date) {
+    List<String> parts = date.split("/");
+    int day = int.parse(parts[0]);
+    int month = int.parse(parts[1]);
+    int year = int.parse(parts[2]);
+
+    return DateTime(year, month, day);
   }
 }

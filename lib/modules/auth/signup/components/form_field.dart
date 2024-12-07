@@ -10,6 +10,7 @@ class CustomFormField extends StatelessWidget {
   final String? errorText;
   final bool obscureText;
   final Widget? suffixIcon; // Para agregar el icono del visibilidad
+  final String Function(String?)? validator;
 
   const CustomFormField({
     super.key,
@@ -22,6 +23,7 @@ class CustomFormField extends StatelessWidget {
     this.errorText,
     this.obscureText = false,
     this.suffixIcon,
+    this.validator,
   });
 
   @override
@@ -32,6 +34,8 @@ class CustomFormField extends StatelessWidget {
         controller: controller,
         keyboardType: inputType,
         obscureText: obscureText,
+        validator: validator,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
         decoration: InputDecoration(
           labelText: label,
           hintText: hintText,
