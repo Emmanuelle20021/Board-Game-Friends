@@ -29,18 +29,18 @@ class User {
     required this.uid,
   });
 
-  factory User.fromMAP({required Map<String, dynamic> data, String? uid}) {
+  factory User.fromMap({required Map<String, dynamic> data, String? uid}) {
     return User(
       email: data['email'],
       username: data['username'],
       name: data['name'],
       lastName: data['lastName'],
-      birthDate: data['birthDate'],
+      birthDate: DateTime.parse(data['birthDate'].toString()),
       country: data['country'],
       city: data['city'],
       state: data['state'],
       rank: data['rank'],
-      favGames: data['favGames'],
+      favGames: <String>[...data['favGames']],
       description: data['description'],
       bggUser: data['bggUser'],
       uid: uid,
@@ -53,7 +53,7 @@ class User {
       'username': username,
       'name': name,
       'lastName': lastName,
-      'birthDate': birthDate,
+      'birthDate': birthDate.toString(),
       'country': country,
       'city': city,
       'state': state,
@@ -83,7 +83,10 @@ class User {
           city == other.city &&
           state == other.state &&
           rank == other.rank &&
-          favGames == other.favGames &&
+          favGames.length == other.favGames.length &&
+          favGames.every(
+            (game) => other.favGames.contains(game),
+          ) &&
           description == other.description &&
           bggUser == other.bggUser &&
           uid == other.uid;
@@ -173,6 +176,32 @@ class User {
       favGames: favGames,
       description: description,
       bggUser: bggUser,
+      uid: uid,
+    );
+  }
+
+  factory User.newEmpty({
+    required String email,
+    required String username,
+    required DateTime birthDate,
+    required String country,
+    required String city,
+    required String state,
+    required String uid,
+  }) {
+    return User(
+      email: email,
+      username: username,
+      name: '',
+      lastName: '',
+      birthDate: birthDate,
+      country: country,
+      city: city,
+      state: state,
+      rank: 0.0,
+      favGames: <String>[],
+      description: '',
+      bggUser: '',
       uid: uid,
     );
   }

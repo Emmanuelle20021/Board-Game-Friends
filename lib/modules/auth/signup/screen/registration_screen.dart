@@ -1,20 +1,28 @@
+import 'package:board_game_friends/exceptions/service_exception.dart';
+import 'package:board_game_friends/main.dart';
+import 'package:board_game_friends/models/user.dart';
+import 'package:board_game_friends/services/auth_service.dart';
+import 'package:board_game_friends/services/user_service.dart';
+import 'package:board_game_friends/shared/utils/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:board_game_friends/modules/auth/signup/components/form_field.dart';
 import 'package:board_game_friends/shared/utils/constants.dart';
+import 'package:csc_picker/csc_picker.dart';
 
 class RegistrationScreen extends StatefulWidget {
   const RegistrationScreen({super.key});
 
   @override
-  _RegistrationScreenState createState() => _RegistrationScreenState();
+  State<RegistrationScreen> createState() => _RegistrationScreenState();
 }
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
   final _usernameController = TextEditingController();
   final _birthdateController = TextEditingController();
   final _countryController = TextEditingController();
-  final _cityStateController = TextEditingController();
+  final _cityController = TextEditingController();
+  final _stateController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
@@ -22,6 +30,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   bool _termsAccepted = false;
   bool _isFormValid = false;
   String? _passwordError;
+
+  bool _isPasswordVisible = false;
+  bool _isConfirmPasswordVisible = false;
 
   @override
   void initState() {
@@ -31,7 +42,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     _usernameController.addListener(_validateForm);
     _birthdateController.addListener(_validateForm);
     _countryController.addListener(_validateForm);
-    _cityStateController.addListener(_validateForm);
+    _cityController.addListener(_validateForm);
+    _stateController.addListener(_validateForm);
     _emailController.addListener(_validateForm);
     _passwordController.addListener(_validateForm);
     _confirmPasswordController.addListener(_validateForm);
@@ -43,7 +55,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     _usernameController.dispose();
     _birthdateController.dispose();
     _countryController.dispose();
-    _cityStateController.dispose();
+    _cityController.dispose();
+    _stateController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
@@ -59,17 +72,53 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         _passwordError = null;
       }
 
+      //password entre 8 y 40 caracteres
+      if (_passwordController.text.length < 8 ||
+          _passwordController.text.length > 40) {
+        _passwordError = 'La contraseña debe tener entre 8 y 40 caracteres';
+      }
+
       // Validar que todos los campos estén completos y las contraseñas coincidan
       _isFormValid = _usernameController.text.isNotEmpty &&
           _birthdateController.text.isNotEmpty &&
           _countryController.text.isNotEmpty &&
-          _cityStateController.text.isNotEmpty &&
+          _cityController.text.isNotEmpty &&
+          _stateController.text.isNotEmpty &&
           _emailController.text.isNotEmpty &&
           _passwordController.text.isNotEmpty &&
           _confirmPasswordController.text.isNotEmpty &&
           _termsAccepted &&
+          isAdult() &&
+          isEmailValid(_emailController.text) &&
           _passwordError == null;
     });
+  }
+
+  //detectar si el usuario es mayor de edad
+  bool isAdult() {
+    final input = _birthdateController.text;
+
+    if (!RegExp(r'^\d{2}/\d{2}/\d{4}$').hasMatch(input)) {
+      return false;
+    }
+
+    try {
+      // Separar día, mes y año
+      final parts = input.split('/');
+      final day = int.parse(parts[0]);
+      final month = int.parse(parts[1]);
+      final year = int.parse(parts[2]);
+
+      final birthdate = DateTime(year, month, day);
+      final now = DateTime.now();
+      final daysPerYear = 365.25;
+      final difference = now.difference(birthdate).inDays;
+      final years = difference / daysPerYear;
+
+      return years >= 18;
+    } catch (e) {
+      return false;
+    }
   }
 
   Future<void> _selectBirthdate(BuildContext context) async {
@@ -129,6 +178,40 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               ),
             ),
 
+            CSCPicker(
+              onCountryChanged: (value) {
+                setState(() {
+                  _countryController.text = value;
+                });
+              },
+              onStateChanged: (value) {
+                setState(() {
+                  _stateController.text = value ?? "";
+                });
+              },
+              onCityChanged: (value) {
+                setState(() {
+                  _cityController.text = value ?? "";
+                });
+              },
+
+              showStates: true,
+              showCities: true,
+              flagState: CountryFlag.DISABLE,
+              //Tipo de letra y color del dropdown acorde a los otros campos
+              dropdownDecoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                //texto
+                border: Border.all(color: Colors.orange),
+              ),
+              selectedItemStyle:
+                  TextStyle(color: Colors.grey[600], fontSize: 16),
+
+              //flagState: CountryFlag.SHOW_IN_DROP_DOWN_ONLY,
+            ),
+
+            /*
+              //Labels reemplazados por CSCPicker
             CustomFormField(
               controller: _countryController,
               label: "País",
@@ -137,12 +220,12 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             ),
 
             CustomFormField(
-              controller: _cityStateController,
+              controller: _cityController,
               label: "Ciudad y Estado",
               hintText: "Introduce tu ciudad y estado",
               prefixIcon: Icons.location_city,
             ),
-
+          */
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: Row(
@@ -165,16 +248,32 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               hintText: "Introduce tu correo",
               prefixIcon: Icons.email,
               inputType: TextInputType.emailAddress,
+              validator: (value) {
+                if (value != null && !isEmailValid(value)) {
+                  return 'Introduce un correo válido';
+                }
+                return '';
+              },
             ),
-
             CustomFormField(
               controller: _passwordController,
               label: "Contraseña",
               hintText: "Introduce tu contraseña",
               prefixIcon: Icons.lock,
               isPassword: true,
+              obscureText: !_isPasswordVisible,
+              suffixIcon: IconButton(
+                icon: Icon(
+                  _isPasswordVisible ? Icons.visibility_off : Icons.visibility,
+                  color: Colors.grey,
+                ),
+                onPressed: () {
+                  setState(() {
+                    _isPasswordVisible = !_isPasswordVisible;
+                  });
+                },
+              ),
             ),
-
             CustomFormField(
               controller: _confirmPasswordController,
               label: "Confirmar contraseña",
@@ -182,10 +281,22 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               prefixIcon: Icons.lock,
               isPassword: true,
               errorText: _passwordError,
+              obscureText: !_isConfirmPasswordVisible,
+              suffixIcon: IconButton(
+                icon: Icon(
+                  _isConfirmPasswordVisible
+                      ? Icons.visibility_off
+                      : Icons.visibility,
+                  color: Colors.grey,
+                ),
+                onPressed: () {
+                  setState(() {
+                    _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
+                  });
+                },
+              ),
             ),
-
             const SizedBox(height: 20),
-
             Row(
               children: [
                 Checkbox(
@@ -205,15 +316,61 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 ),
               ],
             ),
-
             const SizedBox(height: 20),
-
             // Botón de registro
             Center(
               child: ElevatedButton(
                 onPressed: _isFormValid
-                    ? () {
-                        // Acción del botón
+                    ? () async {
+                        try {
+                          // Acción del botón
+                          final user =
+                              await AuthService.signUpWithEmailAndPassword(
+                            email: _emailController.text,
+                            password: _passwordController.text,
+                          );
+
+                          if (user == null && context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  "Ha ocurrido un error. Por favor, inténtalo de nuevo.",
+                                ),
+                              ),
+                            );
+                            return;
+                          }
+                          await UserService.createUser(
+                            User.newEmpty(
+                              uid: user!.uid,
+                              email: _emailController.text,
+                              username: _usernameController.text,
+                              birthDate: parseStringDate(
+                                _birthdateController.text,
+                              ),
+                              country: _countryController.text,
+                              city: _cityController.text,
+                              state: _stateController.text,
+                            ),
+                          );
+
+                          if (!context.mounted) return;
+
+                          // Navegar a la pantalla de inicio
+                          Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(
+                              builder: (context) => HomeScreen(),
+                            ),
+                          );
+                        } on ServiceException catch (e) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                e.message,
+                              ),
+                            ),
+                          );
+                        }
                       }
                     : null,
                 style: ElevatedButton.styleFrom(
@@ -232,5 +389,14 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         ),
       ),
     );
+  }
+
+  DateTime parseStringDate(String date) {
+    List<String> parts = date.split("/");
+    int day = int.parse(parts[0]);
+    int month = int.parse(parts[1]);
+    int year = int.parse(parts[2]);
+
+    return DateTime(year, month, day);
   }
 }
