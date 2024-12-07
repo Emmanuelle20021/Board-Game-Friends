@@ -179,4 +179,30 @@ class User {
       uid: uid,
     );
   }
+
+  factory User.newEmpty({
+    required String email,
+    required String username,
+    required DateTime birthDate,
+    required String country,
+    required String city,
+    required String state,
+    required String uid,
+  }) {
+    return User(
+      email: email,
+      username: username,
+      name: '',
+      lastName: '',
+      birthDate: birthDate,
+      country: country,
+      city: city,
+      state: state,
+      rank: 0.0,
+      favGames: <String>[],
+      description: '',
+      bggUser: '',
+      uid: uid,
+    );
+  }
 }
