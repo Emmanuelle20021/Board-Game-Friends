@@ -1,4 +1,4 @@
-import 'package:board_game_friends/modules/auth/signup/screen/registration_screen.dart';
+import 'package:board_game_friends/modules/preview/screens/preview_screen.dart';
 import 'package:board_game_friends/shared/utils/constants.dart';
 import 'package:board_game_friends/shared/utils/extensions/int_to_gap.dart';
 import 'package:flutter/material.dart';
@@ -24,67 +24,14 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  int _initialIndex = 0;
-
-  final _pages = <Widget>[
-    HomeScreen(),
-    RegistrationScreen(),
-  ];
-
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    final pagesController = PageController(
-      initialPage: _initialIndex,
-    );
-
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: Constants.kAppName,
       theme: Constants.kThemeData,
-      home: Scaffold(
-        body: Stack(
-          children: [
-            PageView.builder(
-              controller: pagesController,
-              itemCount: _pages.length,
-              itemBuilder: (context, index) => _pages[index],
-            ),
-            Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              child: Row(
-                children: [
-                  IconButton(
-                    onPressed: () => setState(() {
-                      if (_initialIndex == 0) return;
-                      _initialIndex -= 1;
-                      pagesController.jumpToPage(_initialIndex);
-                    }),
-                    icon: Icon(
-                      Icons.arrow_back,
-                      color: Colors.blue,
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () => setState(() {
-                      if (_initialIndex == _pages.length - 1) return;
-                      _initialIndex += 1;
-                      pagesController.jumpToPage(_initialIndex);
-                    }),
-                    color: Colors.blue,
-                    icon: Icon(
-                      Icons.arrow_forward,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-        drawerEnableOpenDragGesture: true,
-      ),
+      home: PreviewScreen(),
     );
   }
 }
