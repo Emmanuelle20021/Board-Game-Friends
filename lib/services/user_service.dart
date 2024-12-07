@@ -1,3 +1,4 @@
+import 'package:board_game_friends/exceptions/service_exception.dart';
 import 'package:board_game_friends/models/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -16,7 +17,7 @@ class UserService {
     try {
       await userRef.doc(user.uid).set(user);
     } catch (e) {
-      rethrow;
+      throw ServiceException(e.toString());
     }
   }
 
@@ -24,7 +25,7 @@ class UserService {
     try {
       await userRef.doc(user.uid).set(user);
     } catch (e) {
-      rethrow;
+      throw ServiceException(e.toString());
     }
   }
 
@@ -32,7 +33,7 @@ class UserService {
     try {
       await userRef.doc(user.uid).delete();
     } catch (e) {
-      rethrow;
+      throw ServiceException(e.toString());
     }
   }
 
@@ -51,7 +52,7 @@ class UserService {
       final user = await userRef.doc(uid).get();
       return user.data()!;
     } catch (e) {
-      rethrow;
+      throw ServiceException(e.toString());
     }
   }
 
@@ -60,11 +61,11 @@ class UserService {
       final querySnapshot =
           await userRef.where('email', isEqualTo: email).get();
       if (querySnapshot.docs.isEmpty) {
-        throw Exception('User not found');
+        throw ServiceException('User not found');
       }
       return querySnapshot.docs.first.data();
     } catch (e) {
-      rethrow;
+      throw ServiceException(e.toString());
     }
   }
 }
