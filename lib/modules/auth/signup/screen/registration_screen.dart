@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:board_game_friends/modules/auth/signup/components/form_field.dart';
 import 'package:board_game_friends/shared/utils/constants.dart';
+import 'package:csc_picker/csc_picker.dart';
 
 class RegistrationScreen extends StatefulWidget {
   const RegistrationScreen({super.key});
@@ -14,7 +15,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   final _usernameController = TextEditingController();
   final _birthdateController = TextEditingController();
   final _countryController = TextEditingController();
-  final _cityStateController = TextEditingController();
+  final _cityController = TextEditingController();
+  final _stateController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
@@ -31,7 +33,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     _usernameController.addListener(_validateForm);
     _birthdateController.addListener(_validateForm);
     _countryController.addListener(_validateForm);
-    _cityStateController.addListener(_validateForm);
+    _cityController.addListener(_validateForm);
+    _stateController.addListener(_validateForm);
     _emailController.addListener(_validateForm);
     _passwordController.addListener(_validateForm);
     _confirmPasswordController.addListener(_validateForm);
@@ -43,7 +46,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     _usernameController.dispose();
     _birthdateController.dispose();
     _countryController.dispose();
-    _cityStateController.dispose();
+    _cityController.dispose();
+    _stateController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
@@ -59,18 +63,57 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         _passwordError = null;
       }
 
+      //password entre 8 y 40 caracteres
+      if (_passwordController.text.length < 8 || _passwordController.text.length > 40) {
+        _passwordError = 'La contraseña debe tener entre 8 y 40 caracteres';
+      }
+
+
+
       // Validar que todos los campos estén completos y las contraseñas coincidan
       _isFormValid = _usernameController.text.isNotEmpty &&
           _birthdateController.text.isNotEmpty &&
           _countryController.text.isNotEmpty &&
-          _cityStateController.text.isNotEmpty &&
+          _cityController.text.isNotEmpty &&
+          _stateController.text.isNotEmpty &&
           _emailController.text.isNotEmpty &&
           _passwordController.text.isNotEmpty &&
           _confirmPasswordController.text.isNotEmpty &&
           _termsAccepted &&
+          isAdult() &&
           _passwordError == null;
     });
   }
+
+  //detectar si el usuario es mayor de edad
+  bool isAdult() {
+    final input = _birthdateController.text;
+
+    if (!RegExp(r'^\d{2}/\d{2}/\d{4}$').hasMatch(input)) {
+      print('Error: El formato de la fecha debe ser dd/MM/yyyy.');
+      return false;
+    }
+
+    try {
+      // Separar día, mes y año
+      final parts = input.split('/');
+      final day = int.parse(parts[0]);
+      final month = int.parse(parts[1]);
+      final year = int.parse(parts[2]);
+
+      final birthdate = DateTime(year, month, day);
+      final now = DateTime.now();
+      final daysPerYear = 365.25;
+      final difference = now.difference(birthdate).inDays;
+      final years = difference / daysPerYear;
+
+      return years >= 18;
+    } catch (e) {
+      print('Error: Fecha inválida.');
+      return false;
+    }
+  }
+
 
   Future<void> _selectBirthdate(BuildContext context) async {
     DateTime? pickedDate = await showDatePicker(
@@ -129,6 +172,52 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               ),
             ),
 
+
+
+            CSCPicker(
+              onCountryChanged: (value) {
+                setState(() {
+                  _countryController.text = value;
+                });
+              },
+              onStateChanged: (value) {
+                setState(() {
+                  _stateController.text = value??"";
+                });
+              },
+              onCityChanged: (value) {
+                setState(() {
+                  _cityController.text = value??"";
+                });
+              },
+
+              showStates: true,
+              showCities: true,
+              flagState: CountryFlag.DISABLE,
+              //Tipo de letra y color del dropdown acorde a los otros campos
+                dropdownDecoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                //texto
+                border: Border.all(color: Colors.orange),
+              ),
+                selectedItemStyle: TextStyle( color:Colors.grey[600], fontSize: 16),
+
+
+
+
+
+              //flagState: CountryFlag.SHOW_IN_DROP_DOWN_ONLY,
+
+
+
+
+
+
+            ),
+
+
+          /*
+              //Labels reemplazados por CSCPicker
             CustomFormField(
               controller: _countryController,
               label: "País",
@@ -137,12 +226,12 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             ),
 
             CustomFormField(
-              controller: _cityStateController,
+              controller: _cityController,
               label: "Ciudad y Estado",
               hintText: "Introduce tu ciudad y estado",
               prefixIcon: Icons.location_city,
             ),
-
+          */
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: Row(
