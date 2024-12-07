@@ -99,7 +99,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     final input = _birthdateController.text;
 
     if (!RegExp(r'^\d{2}/\d{2}/\d{4}$').hasMatch(input)) {
-      print('Error: El formato de la fecha debe ser dd/MM/yyyy.');
       return false;
     }
 
@@ -118,7 +117,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
       return years >= 18;
     } catch (e) {
-      print('Error: Fecha inválida.');
       return false;
     }
   }
