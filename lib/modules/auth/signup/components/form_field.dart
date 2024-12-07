@@ -8,6 +8,8 @@ class CustomFormField extends StatelessWidget {
   final bool isPassword;
   final TextEditingController? controller;
   final String? errorText;
+  final bool obscureText;
+  final Widget? suffixIcon; // Para agregar el icono del visibilidad
 
   const CustomFormField({
     super.key,
@@ -18,6 +20,8 @@ class CustomFormField extends StatelessWidget {
     this.isPassword = false,
     this.controller,
     this.errorText,
+    this.obscureText = false,
+    this.suffixIcon,
   });
 
   @override
@@ -27,11 +31,12 @@ class CustomFormField extends StatelessWidget {
       child: TextFormField(
         controller: controller,
         keyboardType: inputType,
-        obscureText: isPassword,
+        obscureText: obscureText,
         decoration: InputDecoration(
           labelText: label,
           hintText: hintText,
           prefixIcon: Icon(prefixIcon),
+          suffixIcon: suffixIcon,
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(color: Colors.orange),
