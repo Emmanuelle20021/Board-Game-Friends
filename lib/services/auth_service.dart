@@ -1,3 +1,4 @@
+import 'package:board_game_friends/exceptions/service_exception.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 
@@ -36,7 +37,7 @@ class AuthService {
       return user;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'email-already-in-use') {
-        throw Exception('El email ya está en uso');
+        throw ServiceException('El email ya está en uso');
       }
       rethrow;
     }
@@ -50,7 +51,7 @@ class AuthService {
       return credential.user!;
     } catch (e) {
       debugPrint(e.toString());
-      throw Exception(e);
+      throw ServiceException(e.toString());
     }
   }
 
