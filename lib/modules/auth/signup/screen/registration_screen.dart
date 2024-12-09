@@ -1,6 +1,6 @@
 import 'package:board_game_friends/exceptions/service_exception.dart';
-import 'package:board_game_friends/main.dart';
 import 'package:board_game_friends/models/user.dart';
+import 'package:board_game_friends/modules/user/home/screens/home_screen.dart';
 import 'package:board_game_friends/services/auth_service.dart';
 import 'package:board_game_friends/services/user_service.dart';
 import 'package:board_game_friends/shared/utils/email_validator.dart';
@@ -164,7 +164,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               hintText: "Introduce tu nombre de usuario",
               prefixIcon: Icons.person,
             ),
-
             GestureDetector(
               onTap: () => _selectBirthdate(context),
               child: AbsorbPointer(
