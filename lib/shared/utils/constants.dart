@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class Constants {
+  Constants._();
+
   static const String kAppName = 'Board Game Friends';
   static const String kAppVersion = '1.0.0';
   static const Color _primary = Color.fromARGB(255, 247, 128, 0);
@@ -9,7 +11,7 @@ class Constants {
   static const Color _onSecondary = Color.fromARGB(255, 0, 7, 34);
   static const Color _error = Color.fromARGB(255, 189, 79, 0);
   static const Color _bodyTextColor = Color.fromARGB(255, 53, 89, 117);
-  static const Color _accent = Color.fromARGB(255, 0, 47, 73);
+  static const Color accent = Color.fromARGB(255, 0, 47, 73);
   static const String kLogoBGFHorizontal = 'svg/logo_bgf_horizontal.svg';
 
   static final kThemeData = ThemeData(
@@ -39,27 +41,27 @@ class Constants {
       ),
       displayLarge: TextStyle(
         fontSize: 40,
-        color: _bodyTextColor,
+        color: accent,
       ),
       displayMedium: TextStyle(
         fontSize: 32,
-        color: _bodyTextColor,
+        color: accent,
       ),
       displaySmall: TextStyle(
         fontSize: 24,
-        color: _bodyTextColor,
+        color: accent,
       ),
       headlineLarge: TextStyle(
         fontSize: 24,
-        color: _accent,
+        color: accent,
       ),
       headlineMedium: TextStyle(
         fontSize: 20,
-        color: _accent,
+        color: accent,
       ),
       headlineSmall: TextStyle(
         fontSize: 16,
-        color: _accent,
+        color: accent,
       ),
       labelLarge: TextStyle(
         fontSize: 20,
@@ -75,15 +77,15 @@ class Constants {
       ),
       titleLarge: TextStyle(
         fontSize: 24,
-        color: _accent,
+        color: accent,
       ),
       titleMedium: TextStyle(
         fontSize: 20,
-        color: _accent,
+        color: accent,
       ),
       titleSmall: TextStyle(
         fontSize: 16,
-        color: _accent,
+        color: accent,
       ),
     ),
     disabledColor: _bodyTextColor.withOpacity(.6),
