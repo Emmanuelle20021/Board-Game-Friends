@@ -55,12 +55,14 @@ class AuthService {
     }
   }
 
-  static Future sendPasswordReset(String email) async {
+  static Future<void> sendPasswordReset(String email) async {
     try {
-      return await _auth.sendPasswordResetEmail(email: email);
-    } catch (e) {
-      debugPrint(e.toString());
-      return null;
+      await _auth.sendPasswordResetEmail(email: email);
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        throw ServiceException('El correo no está registrado.');
+      }
+      rethrow;
     }
   }
 
