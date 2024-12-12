@@ -43,6 +43,7 @@ dependencies:
   firebase_auth: ^5.3.3
   cloud_firestore: ^5.5.0
   csc_picker: ^0.2.7 # WIDGET SELECCIONAR PAIS-ESTADO-CIUDAD
+  lottie: ^3.2.0
   
 dev_dependencies:
   fake_cloud_firestore: ^3.1.0
@@ -72,6 +73,7 @@ flutter:
   assets:
     - assets/
     - assets/svg/
+    - assets/animations/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

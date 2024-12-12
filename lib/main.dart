@@ -1,3 +1,6 @@
+import 'package:board_game_friends/modules/recover/components/loading.dart';
+import 'package:board_game_friends/modules/recover/screens/password_confirm_screen.dart';
+import 'package:board_game_friends/modules/recover/screens/recover_password_screen.dart';
 import 'package:board_game_friends/shared/utils/constants.dart';
 import 'package:board_game_friends/shared/utils/extensions/int_to_gap.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +30,15 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: Constants.kAppName,
       theme: Constants.kThemeData,
+      // Routes
+      routes: {
+        '/recover-password': (context) => RecoverPasswordScreen(),
+        '/loading': (context) => LoadingScreen(),
+        '/password-reset-sent': (context) =>
+            PasswordConfirmScreen(email: 'test@example.com'),
+      },
+      initialRoute: '/',
+
       home: Scaffold(
         extendBodyBehindAppBar: true,
         appBar: AppBar(
